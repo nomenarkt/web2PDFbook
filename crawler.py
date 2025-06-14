@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections import deque
 from typing import List, Set
 from urllib.parse import urljoin, urlparse
+import os
 
 import requests
 from bs4 import BeautifulSoup
@@ -19,7 +20,7 @@ def _is_html_url(url: str) -> bool:
     path = urlparse(url).path
     if not path or path.endswith('/'):
         return True
-    ext = path[path.rfind('.'):]
+    ext = os.path.splitext(path)[1]
     return ext.lower() in {'', '.html', '.htm'}
 
 

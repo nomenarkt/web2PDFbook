@@ -29,10 +29,14 @@ def run_server(directory, port=0):
 
 
 def test_get_all_links_unit():
-    html_index = '<a href="/page1.html">1</a><a href="/page2.html">2</a>'
+    html_index = (
+        '<a href="/page1.html">1</a><a href="/page2.html">2</a>'
+        '<a href="/page">4</a>'
+    )
     html_page1 = '<a href="/page2.html">2</a>'
     html_page2 = '<a href="#anchor">A</a><a href="/page3.html">3</a>'
     html_page3 = ''
+    html_page_no_ext = ''
 
     responses = {
         'https://example.com/': Mock(
@@ -55,6 +59,11 @@ def test_get_all_links_unit():
             text=html_page3,
             headers={'Content-Type': 'text/html'}
         ),
+        'https://example.com/page': Mock(
+            status_code=200,
+            text=html_page_no_ext,
+            headers={'Content-Type': 'text/html'}
+        ),
     }
 
     def fake_get(url, *args, **kwargs):
@@ -65,6 +74,7 @@ def test_get_all_links_unit():
 
     assert result == [
         'https://example.com/',
+        'https://example.com/page',
         'https://example.com/page1.html',
         'https://example.com/page2.html',
         'https://example.com/page3.html',
@@ -73,13 +83,14 @@ def test_get_all_links_unit():
 
 def test_get_all_links_integration(tmp_path):
     (tmp_path / 'index.html').write_text(
-        '<a href="/page1.html">1</a><a href="/page2.html">2</a>'
+        '<a href="/page1.html">1</a><a href="/page2.html">2</a><a href="/page">4</a>'
     )
     (tmp_path / 'page1.html').write_text('<a href="/page2.html">2</a>')
     (tmp_path / 'page2.html').write_text(
         '<a href="#top">top</a><a href="/page3.html">3</a>'
     )
     (tmp_path / 'page3.html').write_text('')
+    (tmp_path / 'page').write_text('')
 
     server, port = run_server(str(tmp_path))
     base_url = f'http://localhost:{port}/'
@@ -91,6 +102,7 @@ def test_get_all_links_integration(tmp_path):
 
     assert result == [
         base_url,
+        f'http://localhost:{port}/page',
         f'http://localhost:{port}/page1.html',
         f'http://localhost:{port}/page2.html',
         f'http://localhost:{port}/page3.html',
