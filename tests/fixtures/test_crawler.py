@@ -31,7 +31,7 @@ def run_server(directory, port=0):
 def test_get_all_links_unit():
     html_index = (
         '<a href="/page1.html">1</a><a href="/page2.html">2</a>'
-        '<a href="/page">4</a>'
+        '<a href="/page">4</a><a href="/image.png">img</a>'
     )
     html_page1 = '<a href="/page2.html">2</a>'
     html_page2 = '<a href="#anchor">A</a><a href="/page3.html">3</a>'
@@ -64,6 +64,11 @@ def test_get_all_links_unit():
             text=html_page_no_ext,
             headers={'Content-Type': 'text/html'}
         ),
+        'https://example.com/image.png': Mock(
+            status_code=200,
+            text='',
+            headers={'Content-Type': 'image/png'}
+        ),
     }
 
     def fake_get(url, *args, **kwargs):
@@ -83,7 +88,8 @@ def test_get_all_links_unit():
 
 def test_get_all_links_integration(tmp_path):
     (tmp_path / 'index.html').write_text(
-        '<a href="/page1.html">1</a><a href="/page2.html">2</a><a href="/page">4</a>'
+        '<a href="/page1.html">1</a><a href="/page2.html">2</a>'
+        '<a href="/page">4</a><a href="/image.png">img</a>'
     )
     (tmp_path / 'page1.html').write_text('<a href="/page2.html">2</a>')
     (tmp_path / 'page2.html').write_text(
@@ -91,6 +97,7 @@ def test_get_all_links_integration(tmp_path):
     )
     (tmp_path / 'page3.html').write_text('')
     (tmp_path / 'page').write_text('')
+    (tmp_path / 'image.png').write_bytes(b'')
 
     server, port = run_server(str(tmp_path))
     base_url = f'http://localhost:{port}/'
