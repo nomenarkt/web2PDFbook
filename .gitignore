@@ -4,4 +4,4 @@ __pycache__/
 *.pdf
 tests/__pycache__/
 
-docs/__pycache__/
+docs/
