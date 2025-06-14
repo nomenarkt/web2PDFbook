@@ -1,3 +1,5 @@
+"""Crawler utilities for collecting internal HTML links from a website."""
+
 from __future__ import annotations
 
 from collections import deque
@@ -7,12 +9,6 @@ import os
 
 import requests
 from bs4 import BeautifulSoup
-
-
-NON_HTML_EXTENSIONS = {
-    '.jpg', '.jpeg', '.png', '.gif', '.svg', '.css', '.js', '.pdf',
-    '.zip', '.tar', '.gz', '.mp4', '.mp3', '.woff', '.woff2'
-}
 
 
 def _is_html_url(url: str) -> bool:
