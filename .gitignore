@@ -6,3 +6,5 @@ tests/__pycache__/
 docs/
 .mypy_cache/
 .ruff_cache/
+.coverage
+htmlcov/
