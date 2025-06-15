@@ -13,7 +13,9 @@ from .usecase import create_book
 logger = get_logger(__name__)
 
 
-async def run(urls: Iterable[str], output: str, timeout: int = 15000) -> str:
+async def run(
+    urls: Iterable[str], output: str, timeout: int = 15000, *, use_index: bool = False
+) -> str:
     """Crawl ``urls`` and produce a merged PDF at ``output``."""
     renderer = PlaywrightRenderer()
 
@@ -33,6 +35,7 @@ async def run(urls: Iterable[str], output: str, timeout: int = 15000) -> str:
                     dest,
                     timeout,
                     link_extractor=extract_links,
+                    use_index_links=use_index,
                     renderer=render_page,
                     merger=merge_pdfs,
                 )

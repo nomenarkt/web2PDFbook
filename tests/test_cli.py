@@ -10,6 +10,7 @@ def test_parse_args_valid():
     assert args.urls == ["https://example.com"]
     assert args.output == "out.pdf"
     assert args.timeout == 2000
+    assert args.use_index is False
 
 
 def test_parse_args_multiple():
@@ -19,6 +20,7 @@ def test_parse_args_multiple():
     assert args.urls == ["https://a.com", "https://b.com"]
     assert args.output == "book.pdf"
     assert args.timeout == 1500
+    assert args.use_index is False
 
 
 @pytest.mark.parametrize(
@@ -33,10 +35,25 @@ def test_parse_args_missing(argv):
         parse_args(argv)
 
 
+def test_parse_args_use_index():
+    args = parse_args(
+        [
+            "https://example.com",
+            "out.pdf",
+            "--timeout",
+            "2000",
+            "--use-index",
+        ]
+    )
+    assert args.use_index is True
+
+
 @pytest.mark.asyncio
 @patch("web2pdfbook.cli.run", new_callable=AsyncMock)
 def test_main_invokes_runner(mock_run, tmp_path):
     out = tmp_path / "book.pdf"
-    argv = ["https://example.com", str(out), "--timeout", "2000"]
+    argv = ["https://example.com", str(out), "--timeout", "2000", "--use-index"]
     assert main(argv) == 0
-    mock_run.assert_awaited_once_with(["https://example.com"], str(out), timeout=2000)
+    mock_run.assert_awaited_once_with(
+        ["https://example.com"], str(out), timeout=2000, use_index=True
+    )
