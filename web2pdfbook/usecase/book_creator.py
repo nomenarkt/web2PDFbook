@@ -6,6 +6,7 @@ from typing import Awaitable, Callable
 from urllib.parse import urlparse
 
 from ..crawler.entity.crawl_result import CrawlResult
+from ..crawler import extract_index_links
 from ..logger import get_logger
 
 LinkExtractor = Callable[[str], CrawlResult]
@@ -21,15 +22,22 @@ async def create_book(
     timeout: int,
     *,
     link_extractor: LinkExtractor,
+    index_extractor: LinkExtractor = extract_index_links,
     renderer: RendererFunc,
     merger: MergeFunc,
+    use_index_links: bool = False,
 ) -> str:
     """Create a PDF book from ``base_url`` and save to ``output_file``."""
     parsed = urlparse(base_url)
     if parsed.scheme == "file":
         links = [base_url]
     else:
-        result = link_extractor(base_url)
+        if use_index_links:
+            result = index_extractor(base_url)
+            logger.info("Used index-based link extraction")
+        else:
+            result = link_extractor(base_url)
+            logger.info("Used full-site link extraction")
         links = result.links
 
     pdf_paths: list[str] = []
