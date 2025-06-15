@@ -10,3 +10,4 @@ docs/
 htmlcov/
 dist/
 *.egg-info/
+.pypirc
