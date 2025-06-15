@@ -20,6 +20,11 @@ def build_parser() -> argparse.ArgumentParser:
         default=load_config().timeout,
         help="Render timeout in milliseconds",
     )
+    parser.add_argument(
+        "--use-index",
+        action="store_true",
+        help="Use navigation index to find pages",
+    )
     return parser
 
 
@@ -36,7 +41,9 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
-    asyncio.run(run(args.urls, args.output, timeout=args.timeout))
+    asyncio.run(
+        run(args.urls, args.output, timeout=args.timeout, use_index=args.use_index)
+    )
     return 0
 
 
