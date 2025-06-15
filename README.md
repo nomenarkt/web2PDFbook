@@ -10,10 +10,16 @@ web2PDFbook crawls a website and compiles its pages into a single PDF. It is use
 
 ## ⚙️ How to install
 
+Install from PyPI:
+
 ```bash
-git clone https://github.com/OWNER/web2PDFbook.git
-cd web2PDFbook
-pip install -r requirements.txt
+pip install web2pdfbook
+```
+
+To test a pre-release from TestPyPI:
+
+```bash
+pip install -i https://test.pypi.org/simple web2pdfbook
 ```
 
 ## 🔄 How it works
@@ -25,8 +31,12 @@ pip install -r requirements.txt
 Generate a book via the CLI:
 
 ```bash
-python -m web2pdfbook.cli https://example.com output.pdf --timeout 20000
+web2pdfbook --help
+web2pdfbook https://example.com output.pdf --timeout 20000 --use-index
 ```
+
+* `--timeout` – render timeout in milliseconds.
+* `--use-index` – only crawl links from index pages.
 
 ## ✅ How to test
 
