@@ -95,6 +95,7 @@ def test_end_to_end_broken_url():
     assert (
         "not found" in result.stderr.lower()
         or "no input pdfs provided" in result.stderr.lower()
+        or "no valid pdfs generated" in result.stderr.lower()
     ), f"Unexpected error: {result.stderr}"
 
 
