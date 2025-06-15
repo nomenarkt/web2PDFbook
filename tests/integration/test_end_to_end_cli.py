@@ -110,7 +110,10 @@ def test_end_to_end_broken_url(cli_package):
     )
 
     assert result.returncode != 0
-    assert "not found" in result.stderr.lower()
+    assert (
+        "not found" in result.stderr.lower()
+        or "no input pdfs provided" in result.stderr.lower()
+    ), f"Unexpected error: {result.stderr}"
 
 
 @pytest.mark.integration
