@@ -1,11 +1,12 @@
 import sys
 from pathlib import Path
+
 ROOT_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT_DIR))
 
-import pytest
+import pytest  # noqa: E402
 
-from cli import parse_args
+from cli import parse_args  # noqa: E402
 
 
 def test_parse_args_valid():
@@ -25,4 +26,3 @@ def test_parse_args_valid():
 def test_parse_args_missing(argv):
     with pytest.raises(SystemExit):
         parse_args(argv)
-

@@ -1,0 +1,12 @@
+[tool.ruff]
+line-length = 88
+extend-select = ["I"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+show_error_codes = true
+ignore_missing_imports = true
+follow_imports = "skip"
