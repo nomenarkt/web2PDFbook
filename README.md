@@ -18,7 +18,7 @@ pip install -r requirements.txt
 
 ## 🔄 How it works
 
-1. **Link crawling** – `crawler.get_all_links()` retrieves all internal HTML links starting from the base URL.
+1. **Link crawling** – `crawler.extract_links()` retrieves all internal HTML links starting from the base URL.
 2. **PDF rendering** – `renderer.render_to_pdf()` uses Playwright to save each page as a PDF.
 3. **Merging** – `merger.merge_pdfs()` merges the PDFs into a single document.
 

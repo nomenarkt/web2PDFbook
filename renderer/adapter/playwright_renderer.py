@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from playwright.async_api import async_playwright
 
-from ..entity.renderer import Renderer, RendererError
+from ..entity.renderer import RendererError
 
 
 class PlaywrightRenderer:
