@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 import sys
 
-from book_creator import run
+from .book_creator import run
 
 if __name__ == "__main__":  # pragma: no cover - manual invocation only
     if len(sys.argv) < 3:

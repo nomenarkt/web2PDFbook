@@ -1,10 +1,4 @@
-import sys
-from pathlib import Path
-
-ROOT_DIR = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT_DIR))
-
-from config import load_config  # noqa: E402
+from web2pdfbook.config import load_config
 
 
 def test_load_config_env(monkeypatch):

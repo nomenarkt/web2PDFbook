@@ -1,3 +1,25 @@
+[project]
+name = "web2pdfbook"
+version = "0.1.0"
+description = "Convert website documentation into a PDF book"
+authors = [{name = "Your Name"}]
+license = "MIT"
+requires-python = ">=3.9"
+dependencies = [
+    "PyPDF2",
+    "playwright",
+    "beautifulsoup4",
+    "requests",
+    "rich",
+]
+
+[project.scripts]
+web2pdfbook = "web2pdfbook.cli:main"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
 [tool.ruff]
 line-length = 88
 extend-select = ["I"]

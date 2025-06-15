@@ -1,14 +1,8 @@
-import sys
-from pathlib import Path
+from unittest.mock import AsyncMock, patch
 
-ROOT_DIR = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT_DIR))
+import pytest
 
-from unittest.mock import AsyncMock, patch  # noqa: E402
-
-import pytest  # noqa: E402
-
-from cli import main, parse_args  # noqa: E402
+from web2pdfbook.cli import main, parse_args
 
 
 def test_parse_args_valid():
@@ -31,7 +25,7 @@ def test_parse_args_missing(argv):
 
 
 @pytest.mark.asyncio
-@patch("cli.run", new_callable=AsyncMock)
+@patch("web2pdfbook.cli.run", new_callable=AsyncMock)
 def test_main_invokes_runner(mock_run, tmp_path):
     out = tmp_path / "book.pdf"
     argv = ["https://example.com", str(out), "--timeout", "2000"]

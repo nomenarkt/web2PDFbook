@@ -1,17 +1,13 @@
 import functools
 import http.server
 import socketserver
-import sys
 import threading
 from pathlib import Path
 from unittest.mock import Mock, patch
 
 import requests
 
-ROOT_DIR = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT_DIR))
-
-from crawler.usecase.extract_links import extract_links  # noqa: E402
+from web2pdfbook.crawler.usecase.extract_links import extract_links
 
 
 class SilentHandler(http.server.SimpleHTTPRequestHandler):
@@ -65,7 +61,7 @@ def test_extract_links_unit():
         resp = responses[url]
         return resp
 
-    with patch("crawler.usecase.extract_links.requests.get", side_effect=fake_get):
+    with patch("web2pdfbook.crawler.usecase.extract_links.requests.get", side_effect=fake_get):
         result = extract_links("https://example.com/")
 
     assert result.links == [
@@ -91,7 +87,7 @@ def test_extract_links_skips_errors():
             raise requests.RequestException
         return responses[url]
 
-    with patch("crawler.usecase.extract_links.requests.get", side_effect=fake_get):
+    with patch("web2pdfbook.crawler.usecase.extract_links.requests.get", side_effect=fake_get):
         result = extract_links("https://example.com/")
 
     assert result.links == ["https://example.com/"]

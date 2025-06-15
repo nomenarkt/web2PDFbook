@@ -1,18 +1,14 @@
 import asyncio
-import sys
 from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-ROOT_DIR = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT_DIR))
-
-from renderer import PlaywrightRenderer, RendererError  # noqa: E402
-from renderer.usecase.render_to_pdf import render_to_pdf  # noqa: E402
+from web2pdfbook.renderer import PlaywrightRenderer, RendererError
+from web2pdfbook.renderer.usecase.render_to_pdf import render_to_pdf
 
 
-@patch("renderer.adapter.playwright_renderer.async_playwright")
+@patch("web2pdfbook.renderer.adapter.playwright_renderer.async_playwright")
 @pytest.mark.parametrize(
     "url,output,timeout",
     [
@@ -51,7 +47,7 @@ def test_render_to_pdf_invalid_params(tmp_path, url, output, timeout):
         asyncio.run(render_to_pdf(url, str(dest), timeout=timeout, renderer=renderer))
 
 
-@patch("renderer.adapter.playwright_renderer.async_playwright")
+@patch("web2pdfbook.renderer.adapter.playwright_renderer.async_playwright")
 @pytest.mark.parametrize(
     "side_effect",
     [Exception("404"), TimeoutError("timeout")],

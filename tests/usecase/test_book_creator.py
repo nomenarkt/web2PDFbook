@@ -1,12 +1,7 @@
 import asyncio
-import sys
-from pathlib import Path
 from unittest.mock import AsyncMock, Mock
 
-ROOT_DIR = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT_DIR))
-
-from usecase import create_book  # noqa: E402
+from web2pdfbook.usecase import create_book
 
 
 def test_create_book_orchestrates(tmp_path):

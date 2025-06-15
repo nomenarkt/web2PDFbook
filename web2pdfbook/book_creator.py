@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from crawler import extract_links
-from merger import PyPDF2Merger, merge_documents
-from renderer import PlaywrightRenderer, render_to_pdf
-from usecase import create_book
+from .crawler import extract_links
+from .merger import PyPDF2Merger, merge_documents
+from .renderer import PlaywrightRenderer, render_to_pdf
+from .usecase import create_book
 
 
 async def run(url: str, output: str, timeout: int = 15000) -> str:
