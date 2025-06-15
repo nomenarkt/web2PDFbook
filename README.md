@@ -40,6 +40,12 @@ web2pdfbook https://example.com output.pdf --timeout 20000 --use-index
 
 ## ✅ How to test
 
+Install dependencies first:
+
+```bash
+pip install -r requirements.txt
+```
+
 ```bash
 python -m coverage run -m pytest -q
 python -m coverage report
