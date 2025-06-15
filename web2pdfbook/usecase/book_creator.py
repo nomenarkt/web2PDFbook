@@ -4,8 +4,8 @@ import os
 import tempfile
 from typing import Awaitable, Callable
 
-from crawler.entity.crawl_result import CrawlResult
-from logger import get_logger
+from ..crawler.entity.crawl_result import CrawlResult
+from ..logger import get_logger
 
 LinkExtractor = Callable[[str], CrawlResult]
 RendererFunc = Callable[[str, str, int], Awaitable[bool]]

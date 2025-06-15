@@ -1,10 +1,4 @@
-import sys
-from pathlib import Path
-
-ROOT_DIR = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT_DIR))
-
-from utils import ensure_pdf_extension  # noqa: E402
+from web2pdfbook.utils import ensure_pdf_extension
 
 
 def test_ensure_pdf_extension():

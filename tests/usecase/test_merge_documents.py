@@ -1,13 +1,9 @@
-import sys
 from pathlib import Path
 
 import pytest
 from PyPDF2 import PdfReader, PdfWriter
 
-ROOT_DIR = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT_DIR))
-
-from merger import MergerError, PyPDF2Merger, merge_documents  # noqa: E402
+from web2pdfbook.merger import MergerError, PyPDF2Merger, merge_documents
 
 
 def create_pdf(path: Path) -> None:

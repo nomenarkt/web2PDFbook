@@ -33,26 +33,11 @@ def playwright_setup():
         pytest.skip("Playwright not available")
 
 
-@pytest.fixture(scope="session")
-def cli_package(tmp_path_factory):
-    pkg_root = tmp_path_factory.mktemp("pkg")
-    pkg_dir = pkg_root / "web2pdfbook"
-    pkg_dir.mkdir()
-    init = pkg_dir / "__init__.py"
-    init.write_text(
-        "import sys, pathlib; sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent.parent))"
-    )
-    cli_stub = pkg_dir / "cli.py"
-    cli_stub.write_text(
-        "from cli import build_parser, parse_args, main\n\nif __name__ == '__main__':\n    import sys\n    raise SystemExit(main(sys.argv[1:]))\n"
-    )
-    return pkg_root
 
 
 @pytest.mark.integration
-def test_end_to_end_success(cli_package):
+def test_end_to_end_success():
     env = os.environ.copy()
-    env["PYTHONPATH"] = str(cli_package)
     docs_dir = ROOT / "docs"
     docs_dir.mkdir(exist_ok=True)
     output = docs_dir / "output.pdf"
@@ -84,9 +69,8 @@ def test_end_to_end_success(cli_package):
 
 
 @pytest.mark.integration
-def test_end_to_end_broken_url(cli_package):
+def test_end_to_end_broken_url():
     env = os.environ.copy()
-    env["PYTHONPATH"] = str(cli_package)
     docs_dir = ROOT / "docs"
     docs_dir.mkdir(exist_ok=True)
     output = docs_dir / "bad.pdf"
@@ -117,9 +101,8 @@ def test_end_to_end_broken_url(cli_package):
 
 
 @pytest.mark.integration
-def test_output_pdf_validity(cli_package):
+def test_output_pdf_validity():
     env = os.environ.copy()
-    env["PYTHONPATH"] = str(cli_package)
     docs_dir = ROOT / "docs"
     docs_dir.mkdir(exist_ok=True)
     output = docs_dir / "valid.pdf"

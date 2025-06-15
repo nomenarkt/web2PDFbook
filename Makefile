@@ -1,8 +1,7 @@
 .PHONY: test test-e2e
 
 test:
-pytest
+	pytest
 
 test-e2e:
-pytest -m integration tests/integration/
-
+	pytest -m integration tests/integration/

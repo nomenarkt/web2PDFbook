@@ -1,17 +1,12 @@
 import asyncio
-import sys
-from pathlib import Path
 from unittest.mock import AsyncMock, patch
 
-ROOT_DIR = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT_DIR))
-
-from book_creator import run  # noqa: E402
+from web2pdfbook.book_creator import run
 
 
-@patch("book_creator.merge_documents")
-@patch("book_creator.render_to_pdf", new_callable=AsyncMock)
-@patch("book_creator.extract_links")
+@patch("web2pdfbook.book_creator.merge_documents")
+@patch("web2pdfbook.book_creator.render_to_pdf", new_callable=AsyncMock)
+@patch("web2pdfbook.book_creator.extract_links")
 def test_run_orchestrates(mock_extract, mock_render, mock_merge, tmp_path):
     mock_extract.return_value.links = ["https://a", "https://b"]
     out = tmp_path / "book.pdf"
