@@ -33,8 +33,6 @@ def playwright_setup():
         pytest.skip("Playwright not available")
 
 
-
-
 @pytest.mark.integration
 def test_end_to_end_success():
     env = os.environ.copy()
@@ -115,6 +113,70 @@ def test_output_pdf_validity():
             "-m",
             "web2pdfbook.cli",
             "https://httpbin.org/html",
+            str(output),
+            "--timeout",
+            "15000",
+        ],
+        capture_output=True,
+        text=True,
+        cwd=ROOT,
+        env=env,
+    )
+
+    assert result.returncode == 0, result.stderr
+    reader = PdfReader(str(output))
+    assert len(reader.pages) >= 1
+    output.unlink()
+
+
+@pytest.mark.integration
+def test_end_to_end_multiple_urls():
+    env = os.environ.copy()
+    docs_dir = ROOT / "docs"
+    docs_dir.mkdir(exist_ok=True)
+    output = docs_dir / "multi.pdf"
+    if output.exists():
+        output.unlink()
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "web2pdfbook.cli",
+            "https://httpbin.org/html",
+            "https://httpbin.org/html",
+            str(output),
+            "--timeout",
+            "15000",
+        ],
+        capture_output=True,
+        text=True,
+        cwd=ROOT,
+        env=env,
+    )
+
+    assert result.returncode == 0, result.stderr
+    reader = PdfReader(str(output))
+    assert len(reader.pages) >= 2
+    output.unlink()
+
+
+@pytest.mark.integration
+def test_end_to_end_mixed_urls():
+    env = os.environ.copy()
+    docs_dir = ROOT / "docs"
+    docs_dir.mkdir(exist_ok=True)
+    output = docs_dir / "mixed.pdf"
+    if output.exists():
+        output.unlink()
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "web2pdfbook.cli",
+            "https://httpbin.org/html",
+            "https://example.com/404",
             str(output),
             "--timeout",
             "15000",
