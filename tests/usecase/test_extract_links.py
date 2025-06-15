@@ -6,10 +6,12 @@ import threading
 from pathlib import Path
 from unittest.mock import Mock, patch
 
+import requests
+
 ROOT_DIR = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT_DIR))
 
-from crawler import get_all_links  # noqa: E402
+from crawler.usecase.extract_links import extract_links  # noqa: E402
 
 
 class SilentHandler(http.server.SimpleHTTPRequestHandler):
@@ -26,7 +28,7 @@ def run_server(directory, port=0):
     return httpd, httpd.server_address[1]
 
 
-def test_get_all_links_unit():
+def test_extract_links_unit():
     html_index = (
         '<a href="/page1.html">1</a><a href="/page2.html">2</a>'
         '<a href="/page">4</a><a href="/image.png">img</a>'
@@ -60,12 +62,13 @@ def test_get_all_links_unit():
     }
 
     def fake_get(url, *args, **kwargs):
-        return responses[url]
+        resp = responses[url]
+        return resp
 
-    with patch("crawler.requests.get", side_effect=fake_get):
-        result = get_all_links("https://example.com/")
+    with patch("crawler.usecase.extract_links.requests.get", side_effect=fake_get):
+        result = extract_links("https://example.com/")
 
-    assert result == [
+    assert result.links == [
         "https://example.com/",
         "https://example.com/page",
         "https://example.com/page1.html",
@@ -74,7 +77,27 @@ def test_get_all_links_unit():
     ]
 
 
-def test_get_all_links_integration(tmp_path):
+def test_extract_links_skips_errors():
+    responses = {
+        "https://example.com/": Mock(
+            status_code=200,
+            text='<a href="/bad.html">bad</a>',
+            headers={"Content-Type": "text/html"},
+        ),
+    }
+
+    def fake_get(url, *args, **kwargs):
+        if url.endswith("bad.html"):
+            raise requests.RequestException
+        return responses[url]
+
+    with patch("crawler.usecase.extract_links.requests.get", side_effect=fake_get):
+        result = extract_links("https://example.com/")
+
+    assert result.links == ["https://example.com/"]
+
+
+def test_extract_links_integration(tmp_path):
     (tmp_path / "index.html").write_text(
         '<a href="/page1.html">1</a><a href="/page2.html">2</a>'
         '<a href="/page">4</a><a href="/image.png">img</a>'
@@ -90,15 +113,15 @@ def test_get_all_links_integration(tmp_path):
     server, port = run_server(str(tmp_path))
     base_url = f"http://localhost:{port}/"
     try:
-        result = get_all_links(base_url)
+        result = extract_links(base_url)
     finally:
         server.shutdown()
         server.server_close()
 
-    assert result == [
+    assert result.links == [
         base_url,
-        f"http://localhost:{port}/page",
         f"http://localhost:{port}/page1.html",
         f"http://localhost:{port}/page2.html",
         f"http://localhost:{port}/page3.html",
     ]
+

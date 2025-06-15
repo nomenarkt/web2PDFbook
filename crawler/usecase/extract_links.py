@@ -1,15 +1,14 @@
-"""Crawler utilities for collecting internal HTML links from a website."""
-
 from __future__ import annotations
 
 import os
 from collections import deque
-from typing import List, Set
 from urllib.parse import urljoin, urlparse
 
 import requests
 from bs4 import BeautifulSoup
 from bs4.element import Tag
+
+from ..entity.crawl_result import CrawlResult
 
 
 def _is_html_url(url: str) -> bool:
@@ -21,26 +20,18 @@ def _is_html_url(url: str) -> bool:
     return ext.lower() in {"", ".html", ".htm"}
 
 
-def get_all_links(base_url: str) -> List[str]:
-    """Crawl ``base_url`` and return all internal HTML links.
-
-    Args:
-        base_url: The starting URL of the documentation site.
-
-    Returns:
-        A sorted list of unique URLs belonging to the same domain as ``base_url``.
-    """
+def extract_links(base_url: str) -> CrawlResult:
+    """Crawl ``base_url`` and return internal HTML links."""
     parsed_base = urlparse(base_url)
     domain = parsed_base.netloc
 
-    visited: Set[str] = set()
+    visited: set[str] = set()
     queue: deque[str] = deque([base_url])
 
     while queue:
         current_url = queue.popleft()
         if current_url in visited:
             continue
-        visited.add(current_url)
 
         try:
             response = requests.get(current_url)
@@ -51,6 +42,8 @@ def get_all_links(base_url: str) -> List[str]:
         content_type = response.headers.get("Content-Type", "")
         if "text/html" not in content_type:
             continue
+
+        visited.add(current_url)
 
         soup = BeautifulSoup(response.text, "html.parser")
         for tag in soup.find_all("a", href=True):
@@ -70,4 +63,4 @@ def get_all_links(base_url: str) -> List[str]:
             if next_url not in visited and next_url not in queue:
                 queue.append(next_url)
 
-    return sorted(visited)
+    return CrawlResult(sorted(visited))

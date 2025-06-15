@@ -8,8 +8,8 @@ import pytest
 ROOT_DIR = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT_DIR))
 
-from renderer import RendererError, PlaywrightRenderer
-from renderer.usecase.render_to_pdf import render_to_pdf
+from renderer import PlaywrightRenderer, RendererError  # noqa: E402
+from renderer.usecase.render_to_pdf import render_to_pdf  # noqa: E402
 
 
 @patch("renderer.adapter.playwright_renderer.async_playwright")
