@@ -1,12 +1,14 @@
+# ruff: noqa: I001
 import sys
 from pathlib import Path
+
+import pytest
+from PyPDF2 import PdfReader, PdfWriter
+
 ROOT_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT_DIR))
 
-from PyPDF2 import PdfReader, PdfWriter
-import pytest
-
-from merger import MergerError, merge_pdfs
+from merger import MergerError, merge_pdfs  # noqa: E402  # noqa: I001
 
 
 def create_pdf(path: Path) -> None:

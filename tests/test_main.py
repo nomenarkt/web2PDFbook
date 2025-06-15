@@ -1,12 +1,12 @@
+import asyncio
 import sys
 from pathlib import Path
-import asyncio
 from unittest.mock import AsyncMock, patch
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT_DIR))
 
-from main import run
+from main import run  # noqa: E402
 
 
 @patch("main.merge_pdfs")

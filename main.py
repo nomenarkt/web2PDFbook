@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-import asyncio
 import os
 import tempfile
 
 from crawler import get_all_links
+from logger import get_logger
 from merger import merge_pdfs
 from renderer import render_to_pdf
-from logger import get_logger
 
 logger = get_logger(__name__)
 

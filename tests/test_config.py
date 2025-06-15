@@ -4,7 +4,7 @@ from pathlib import Path
 ROOT_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT_DIR))
 
-from config import load_config
+from config import load_config  # noqa: E402
 
 
 def test_load_config_env(monkeypatch):

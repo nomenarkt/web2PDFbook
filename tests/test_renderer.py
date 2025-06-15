@@ -1,15 +1,14 @@
+import asyncio
 import sys
 from pathlib import Path
-
-import asyncio
 from unittest.mock import AsyncMock, MagicMock, patch
 
-import pytest
+import pytest  # noqa: E402
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT_DIR))
 
-from renderer import RendererError, render_to_pdf
+from renderer import RendererError, render_to_pdf  # noqa: E402
 
 
 @patch("renderer.async_playwright")

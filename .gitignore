@@ -3,5 +3,6 @@ __pycache__/
 *.log
 *.pdf
 tests/__pycache__/
-
 docs/
+.mypy_cache/
+.ruff_cache/
