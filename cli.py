@@ -4,7 +4,7 @@ import argparse
 import asyncio
 
 from config import load_config
-from main import run
+from book_creator import run
 
 
 def build_parser() -> argparse.ArgumentParser:

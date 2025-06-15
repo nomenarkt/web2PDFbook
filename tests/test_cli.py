@@ -5,8 +5,9 @@ ROOT_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT_DIR))
 
 import pytest  # noqa: E402
+from unittest.mock import AsyncMock, patch
 
-from cli import parse_args  # noqa: E402
+from cli import main, parse_args  # noqa: E402
 
 
 def test_parse_args_valid():
@@ -26,3 +27,12 @@ def test_parse_args_valid():
 def test_parse_args_missing(argv):
     with pytest.raises(SystemExit):
         parse_args(argv)
+
+
+@pytest.mark.asyncio
+@patch("cli.run", new_callable=AsyncMock)
+def test_main_invokes_runner(mock_run, tmp_path):
+    out = tmp_path / "book.pdf"
+    argv = ["https://example.com", str(out), "--timeout", "2000"]
+    assert main(argv) == 0
+    mock_run.assert_awaited_once_with("https://example.com", str(out), timeout=2000)
