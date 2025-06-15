@@ -8,3 +8,5 @@ docs/
 .ruff_cache/
 .coverage
 htmlcov/
+dist/
+*.egg-info/
