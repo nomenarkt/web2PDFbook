@@ -5,7 +5,7 @@ import tempfile
 
 from crawler import extract_links
 from logger import get_logger
-from merger import merge_pdfs
+from merger import PyPDF2Merger, merge_documents
 from renderer import PlaywrightRenderer, render_to_pdf
 
 logger = get_logger(__name__)
@@ -22,6 +22,6 @@ async def run(url: str, output: str, timeout: int = 15000) -> str:
             dest = os.path.join(tmpdir, f"page{idx}.pdf")
             await render_to_pdf(link, dest, timeout=timeout, renderer=renderer)
             pdf_paths.append(dest)
-        merge_pdfs(pdf_paths, output)
+        merge_documents(pdf_paths, output, merger=PyPDF2Merger())
     logger.info("written %s", output)
     return output
