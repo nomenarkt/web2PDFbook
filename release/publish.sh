@@ -11,6 +11,5 @@ twine upload --repository-url "$REPOSITORY_URL" dist/*
 
 # Verify installation from TestPyPI
 pip install -i https://test.pypi.org/simple --no-deps --force-reinstall web2pdfbook
-
 echo "\nPackage uploaded to $REPOSITORY_URL"
 echo "Install with: pip install -i https://test.pypi.org/simple web2pdfbook"
