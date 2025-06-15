@@ -9,8 +9,11 @@ from .config import load_config
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Web2PDFBook CLI")
-    parser.add_argument("url", help="Base documentation URL")
-    parser.add_argument("output", help="Destination PDF file")
+    parser.add_argument(
+        "inputs",
+        nargs="+",
+        help="Base documentation URLs followed by the destination PDF file",
+    )
     parser.add_argument(
         "--timeout",
         type=int,
@@ -21,12 +24,19 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
-    return build_parser().parse_args(argv)
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    if len(args.inputs) < 2:
+        parser.error("must provide at least one URL and an output file")
+    args.urls = args.inputs[:-1]
+    args.output = args.inputs[-1]
+    del args.inputs
+    return args
 
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
-    asyncio.run(run(args.url, args.output, timeout=args.timeout))
+    asyncio.run(run(args.urls, args.output, timeout=args.timeout))
     return 0
 
 
