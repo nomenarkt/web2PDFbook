@@ -22,6 +22,12 @@ To test a pre-release from TestPyPI:
 pip install -i https://test.pypi.org/simple web2pdfbook
 ```
 
+If you cloned the repository and want to invoke `web2pdfbook` locally, install the dependencies first:
+
+```bash
+pip install -r requirements.txt
+```
+
 ## 🔄 How it works
 
 1. **Link crawling** – `crawler.extract_links()` retrieves all internal HTML links starting from the base URL.
