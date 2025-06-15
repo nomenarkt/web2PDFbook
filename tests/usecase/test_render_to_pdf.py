@@ -3,15 +3,16 @@ import sys
 from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
 
-import pytest  # noqa: E402
+import pytest
 
-ROOT_DIR = Path(__file__).resolve().parents[1]
+ROOT_DIR = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT_DIR))
 
-from renderer import RendererError, render_to_pdf  # noqa: E402
+from renderer import RendererError, PlaywrightRenderer
+from renderer.usecase.render_to_pdf import render_to_pdf
 
 
-@patch("renderer.async_playwright")
+@patch("renderer.adapter.playwright_renderer.async_playwright")
 @pytest.mark.parametrize(
     "url,output,timeout",
     [
@@ -28,7 +29,8 @@ def test_render_to_pdf_unit(mock_playwright, tmp_path, url, output, timeout):
     mock_playwright.return_value = mock_playwright_cm
 
     dest = tmp_path / output
-    assert asyncio.run(render_to_pdf(url, str(dest), timeout=timeout)) is True
+    renderer = PlaywrightRenderer()
+    assert asyncio.run(render_to_pdf(url, str(dest), timeout=timeout, renderer=renderer)) is True
     page.goto.assert_called_with(url, timeout=timeout)
     page.wait_for_load_state.assert_called_with("networkidle")
     page.pdf.assert_called_with(path=str(dest))
@@ -44,11 +46,12 @@ def test_render_to_pdf_unit(mock_playwright, tmp_path, url, output, timeout):
 )
 def test_render_to_pdf_invalid_params(tmp_path, url, output, timeout):
     dest = tmp_path / output
+    renderer = PlaywrightRenderer()
     with pytest.raises(RendererError):
-        asyncio.run(render_to_pdf(url, str(dest), timeout=timeout))
+        asyncio.run(render_to_pdf(url, str(dest), timeout=timeout, renderer=renderer))
 
 
-@patch("renderer.async_playwright")
+@patch("renderer.adapter.playwright_renderer.async_playwright")
 @pytest.mark.parametrize(
     "side_effect",
     [Exception("404"), TimeoutError("timeout")],
@@ -63,13 +66,26 @@ def test_render_to_pdf_errors(mock_playwright, tmp_path, side_effect):
     mock_playwright.return_value = mock_playwright_cm
 
     dest = tmp_path / "out.pdf"
+    renderer = PlaywrightRenderer()
     with pytest.raises(RendererError):
-        asyncio.run(render_to_pdf("https://example.com", str(dest)))
+        asyncio.run(render_to_pdf("https://example.com", str(dest), timeout=15000, renderer=renderer))
+
+
+class FailingRenderer:
+    async def render(self, url: str, output_path: str, timeout: int) -> None:
+        raise RuntimeError("boom")
+
+
+def test_render_to_pdf_wraps_errors(tmp_path):
+    dest = tmp_path / "out.pdf"
+    with pytest.raises(RendererError):
+        asyncio.run(render_to_pdf("https://example.com", str(dest), timeout=1500, renderer=FailingRenderer()))
 
 
 @pytest.mark.skip("requires network and browser")
 def test_render_to_pdf_integration(tmp_path):
     output = tmp_path / "page.pdf"
     url = "https://docs.telegram-mini-apps.com"
-    assert asyncio.run(render_to_pdf(url, str(output), timeout=20000)) is True
+    renderer = PlaywrightRenderer()
+    assert asyncio.run(render_to_pdf(url, str(output), timeout=20000, renderer=renderer)) is True
     assert output.exists() and output.stat().st_size > 0
