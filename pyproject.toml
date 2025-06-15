@@ -10,3 +10,10 @@ warn_unused_ignores = true
 show_error_codes = true
 ignore_missing_imports = true
 follow_imports = "skip"
+
+[tool.coverage.run]
+branch = true
+source = ["."]
+
+[tool.coverage.report]
+fail_under = 85

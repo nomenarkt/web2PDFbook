@@ -5,3 +5,5 @@ playwright
 pytest
 tox
 rich
+coverage[toml]
+coverage-badge
