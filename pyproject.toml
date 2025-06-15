@@ -1,6 +1,6 @@
 [project]
 name = "web2pdfbook"
-version = "0.1.1"
+version = "0.1.2"
 description = "Convert website documentation into a PDF book"
 readme = "README.md"
 authors = [{name = "Nomena Rakotoarison", email = "nomenaarison@gmail.com"}]
