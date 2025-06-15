@@ -66,3 +66,7 @@ Build and upload the distribution (defaults to TestPyPI):
 ```
 
 This script runs `python -m build` and uploads with `twine`. Set `REPOSITORY_URL` to publish elsewhere.
+
+The repository contains a `.pypirc` template with placeholder credentials for
+TestPyPI and PyPI. Fill in your tokens (or copy it to `~/.pypirc`) so `twine`
+can authenticate during the upload.
