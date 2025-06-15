@@ -3,10 +3,20 @@ import subprocess
 import sys
 from pathlib import Path
 
+import requests
+
 import pytest
 from PyPDF2 import PdfReader
 
 ROOT = Path(__file__).resolve().parents[2]
+
+
+def is_url_accessible(url: str) -> bool:
+    try:
+        resp = requests.get(url, timeout=5)
+        return resp.status_code == 200
+    except Exception:
+        return False
 
 
 def _ensure_playwright_installed() -> bool:
@@ -23,7 +33,10 @@ def _ensure_playwright_installed() -> bool:
             "chromium",
         ],
         capture_output=True,
+        text=True,
     )
+    if result.returncode != 0:
+        print(result.stderr, file=sys.stderr)
     return result.returncode == 0
 
 
@@ -42,15 +55,19 @@ def test_end_to_end_success():
     if output.exists():
         output.unlink()
 
+    url = "https://httpbin.org/html"
+    if not is_url_accessible(url):
+        pytest.skip("Test URL is not accessible")
+
     result = subprocess.run(
         [
             sys.executable,
             "-m",
             "web2pdfbook.cli",
-            "https://httpbin.org/html",
+            url,
             str(output),
             "--timeout",
-            "15000",
+            "30000",
         ],
         capture_output=True,
         text=True,
