@@ -15,8 +15,8 @@ class Renderer(Protocol):
 
 def validate_params(url: str, output_path: str, timeout: int) -> None:
     parsed = urlparse(url)
-    if parsed.scheme not in {"http", "https"}:
-        raise RendererError("URL must start with http or https")
+    if parsed.scheme not in {"http", "https", "file"}:
+        raise RendererError("URL must start with http, https, or file")
     if not output_path.lower().endswith(".pdf"):
         raise RendererError("output_path must be a .pdf file")
     if timeout <= 1000:

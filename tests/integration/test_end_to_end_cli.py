@@ -192,3 +192,39 @@ def test_end_to_end_mixed_urls():
     reader = PdfReader(str(output))
     assert len(reader.pages) >= 1
     output.unlink()
+
+
+@pytest.mark.integration
+def test_end_to_end_file_url(tmp_path):
+    env = os.environ.copy()
+    docs_dir = ROOT / "docs"
+    docs_dir.mkdir(exist_ok=True)
+    output = docs_dir / "local.pdf"
+    if output.exists():
+        output.unlink()
+
+    html = tmp_path / "sample.html"
+    html.write_text(Path(ROOT / "tests" / "fixtures" / "sample.html").read_text())
+    url = html.as_uri()
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "web2pdfbook.cli",
+            url,
+            str(output),
+            "--timeout",
+            "15000",
+        ],
+        capture_output=True,
+        text=True,
+        cwd=ROOT,
+        env=env,
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert output.stat().st_size > 10 * 1024
+    reader = PdfReader(str(output))
+    assert len(reader.pages) >= 1
+    output.unlink()

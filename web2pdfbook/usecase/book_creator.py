@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 import tempfile
 from typing import Awaitable, Callable
+from urllib.parse import urlparse
 
 from ..crawler.entity.crawl_result import CrawlResult
 from ..logger import get_logger
@@ -24,8 +25,12 @@ async def create_book(
     merger: MergeFunc,
 ) -> str:
     """Create a PDF book from ``base_url`` and save to ``output_file``."""
-    result = link_extractor(base_url)
-    links = result.links
+    parsed = urlparse(base_url)
+    if parsed.scheme == "file":
+        links = [base_url]
+    else:
+        result = link_extractor(base_url)
+        links = result.links
 
     pdf_paths: list[str] = []
     with tempfile.TemporaryDirectory() as tmpdir:

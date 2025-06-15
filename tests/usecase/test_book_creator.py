@@ -32,3 +32,32 @@ def test_create_book_orchestrates(tmp_path):
     assert len(args[0]) == 2
     for path in args[0]:
         assert path.endswith(".pdf")
+
+
+def test_create_book_file_scheme(tmp_path):
+    extractor = Mock()
+    renderer = AsyncMock()
+    merger = Mock()
+
+    html = tmp_path / "page.html"
+    html.write_text("<p>hi</p>")
+    url = html.as_uri()
+
+    output = tmp_path / "out.pdf"
+
+    asyncio.run(
+        create_book(
+            url,
+            str(output),
+            1234,
+            link_extractor=extractor,
+            renderer=renderer,
+            merger=merger,
+        )
+    )
+
+    extractor.assert_not_called()
+    renderer.assert_awaited_once()
+    merger.assert_called_once()
+    args = merger.call_args.args
+    assert len(args[0]) == 1
