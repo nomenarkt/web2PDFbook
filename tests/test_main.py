@@ -9,7 +9,7 @@ sys.path.insert(0, str(ROOT_DIR))
 from main import run  # noqa: E402
 
 
-@patch("main.merge_pdfs")
+@patch("main.merge_documents")
 @patch("main.render_to_pdf", new_callable=AsyncMock)
 @patch("main.extract_links")
 def test_run_orchestrates(mock_extract, mock_render, mock_merge, tmp_path):
