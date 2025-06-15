@@ -3,8 +3,8 @@ from __future__ import annotations
 import argparse
 import asyncio
 
-from config import load_config
 from book_creator import run
+from config import load_config
 
 
 def build_parser() -> argparse.ArgumentParser:

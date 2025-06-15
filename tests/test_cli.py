@@ -4,8 +4,9 @@ from pathlib import Path
 ROOT_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT_DIR))
 
+from unittest.mock import AsyncMock, patch  # noqa: E402
+
 import pytest  # noqa: E402
-from unittest.mock import AsyncMock, patch
 
 from cli import main, parse_args  # noqa: E402
 
