@@ -7,21 +7,27 @@ from crawler import extract_links
 from logger import get_logger
 from merger import PyPDF2Merger, merge_documents
 from renderer import PlaywrightRenderer, render_to_pdf
+from usecase import create_book
 
 logger = get_logger(__name__)
 
 
 async def run(url: str, output: str, timeout: int = 15000) -> str:
     """Crawl ``url`` and produce a merged PDF at ``output``."""
-    result = extract_links(url)
-    links = result.links
+
     renderer = PlaywrightRenderer()
-    pdf_paths: list[str] = []
-    with tempfile.TemporaryDirectory() as tmpdir:
-        for idx, link in enumerate(links):
-            dest = os.path.join(tmpdir, f"page{idx}.pdf")
-            await render_to_pdf(link, dest, timeout=timeout, renderer=renderer)
-            pdf_paths.append(dest)
-        merge_documents(pdf_paths, output, merger=PyPDF2Merger())
-    logger.info("written %s", output)
-    return output
+
+    async def render_page(u: str, dest: str, t: int) -> bool:
+        return await render_to_pdf(u, dest, timeout=t, renderer=renderer)
+
+    def merge_pdfs(paths: list[str], dest: str) -> bool:
+        return merge_documents(paths, dest, merger=PyPDF2Merger())
+
+    return await create_book(
+        url,
+        output,
+        timeout,
+        link_extractor=extract_links,
+        renderer=render_page,
+        merger=merge_pdfs,
+    )
