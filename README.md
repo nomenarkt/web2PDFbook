@@ -50,3 +50,19 @@ pip install -r requirements.txt
 python -m coverage run -m pytest -q
 python -m coverage report
 ```
+
+## 📦 How to release
+
+Install packaging dependencies:
+
+```bash
+pip install -r dev-requirements.txt
+```
+
+Build and upload the distribution (defaults to TestPyPI):
+
+```bash
+./release/publish.sh
+```
+
+This script runs `python -m build` and uploads with `twine`. Set `REPOSITORY_URL` to publish elsewhere.

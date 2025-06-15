@@ -2,3 +2,5 @@
 pre-commit
 ruff
 mypy
+build
+twine
