@@ -4,16 +4,11 @@ version = "0.1.1"
 description = "Convert website documentation into a PDF book"
 readme = "README.md"
 authors = [{name = "Nomena Rakotoarison", email = "nomenaarison@gmail.com"}]
-homepage = "https://github.com/OWNER/web2PDFbook"
 keywords = ["pdf", "web", "crawler", "documentation"]
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
-[project.urls]
-Source = "https://github.com/OWNER/web2PDFbook"
-Issues = "https://github.com/OWNER/web2PDFbook/issues"
 license = "MIT"
 requires-python = ">=3.9"
 dependencies = [
@@ -23,6 +18,10 @@ dependencies = [
     "requests",
     "rich",
 ]
+[project.urls]
+Source = "https://github.com/OWNER/web2PDFbook"
+Issues = "https://github.com/OWNER/web2PDFbook/issues"
+Homepage = "https://github.com/OWNER/web2PDFbook"
 
 [project.scripts]
 web2pdfbook = "web2pdfbook.cli:main"
@@ -53,3 +52,6 @@ fail_under = 85
 
 [tool.setuptools]
 license-files = ["LICENSE"]
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["web2pdfbook*"]
