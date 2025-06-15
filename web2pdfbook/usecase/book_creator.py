@@ -5,8 +5,8 @@ import tempfile
 from typing import Awaitable, Callable
 from urllib.parse import urlparse
 
-from ..crawler.entity.crawl_result import CrawlResult
 from ..crawler import extract_index_links
+from ..crawler.entity.crawl_result import CrawlResult
 from ..logger import get_logger
 
 LinkExtractor = Callable[[str], CrawlResult]
