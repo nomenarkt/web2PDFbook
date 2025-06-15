@@ -2,7 +2,6 @@ import functools
 import http.server
 import socketserver
 import threading
-from pathlib import Path
 from unittest.mock import Mock, patch
 
 import requests
@@ -61,7 +60,9 @@ def test_extract_links_unit():
         resp = responses[url]
         return resp
 
-    with patch("web2pdfbook.crawler.usecase.extract_links.requests.get", side_effect=fake_get):
+    with patch(
+        "web2pdfbook.crawler.usecase.extract_links.requests.get", side_effect=fake_get
+    ):
         result = extract_links("https://example.com/")
 
     assert result.links == [
@@ -87,7 +88,9 @@ def test_extract_links_skips_errors():
             raise requests.RequestException
         return responses[url]
 
-    with patch("web2pdfbook.crawler.usecase.extract_links.requests.get", side_effect=fake_get):
+    with patch(
+        "web2pdfbook.crawler.usecase.extract_links.requests.get", side_effect=fake_get
+    ):
         result = extract_links("https://example.com/")
 
     assert result.links == ["https://example.com/"]
@@ -120,4 +123,3 @@ def test_extract_links_integration(tmp_path):
         f"http://localhost:{port}/page2.html",
         f"http://localhost:{port}/page3.html",
     ]
-
