@@ -3,9 +3,8 @@ import subprocess
 import sys
 from pathlib import Path
 
-import requests
-
 import pytest
+import requests
 from PyPDF2 import PdfReader
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -156,26 +155,37 @@ def test_end_to_end_multiple_urls():
     if output.exists():
         output.unlink()
 
+    urls = ["https://httpbin.org/html", "https://httpbin.org/html"]
+    accessible_urls = [u for u in urls if is_url_accessible(u)]
+
+    if not accessible_urls:
+        pytest.skip("No accessible URLs for testing")
+
+    cmd = [
+        sys.executable,
+        "-m",
+        "web2pdfbook.cli",
+        *accessible_urls,
+        str(output),
+        "--timeout",
+        "15000",
+    ]
+
     result = subprocess.run(
-        [
-            sys.executable,
-            "-m",
-            "web2pdfbook.cli",
-            "https://httpbin.org/html",
-            "https://httpbin.org/html",
-            str(output),
-            "--timeout",
-            "15000",
-        ],
+        cmd,
         capture_output=True,
         text=True,
         cwd=ROOT,
         env=env,
     )
 
+    if result.returncode != 0:
+        print(result.stdout)
+        print(result.stderr, file=sys.stderr)
+
     assert result.returncode == 0, result.stderr
     reader = PdfReader(str(output))
-    assert len(reader.pages) >= 2
+    assert len(reader.pages) == len(accessible_urls)
     output.unlink()
 
 
