@@ -1,8 +1,8 @@
 # web2PDFbook
 
-[![Python CI](https://github.com/OWNER/web2PDFbook/actions/workflows/python-ci.yml/badge.svg)](https://github.com/OWNER/web2PDFbook/actions/workflows/python-ci.yml)
+[![Python CI](https://github.com/nomenarkt/web2PDFbook/actions/workflows/python-ci.yml/badge.svg)](https://github.com/nomenarkt/web2PDFbook/actions/workflows/python-ci.yml)
 
-![Coverage](https://raw.githubusercontent.com/OWNER/web2PDFbook/main/coverage.svg)
+![Coverage](https://raw.githubusercontent.com/nomenarkt/web2PDFbook/main/coverage.svg)
 
 ## 🧠 What it does
 
