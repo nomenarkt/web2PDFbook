@@ -24,3 +24,19 @@ jobs:
           python -m coverage report --fail-under=85
           python -m coverage html
           coverage-badge -o coverage.svg -f
+      - name: Generate coverage report
+        run: |
+          pip install coverage genbadge[coverage]
+          coverage run -m pytest
+          coverage xml
+          genbadge coverage -i coverage.xml -o coverage.svg
+
+      - name: Commit badge
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add coverage.svg
+          git commit -m "chore: update coverage badge [skip ci]" || echo "No changes"
+          git push
+

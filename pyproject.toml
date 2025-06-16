@@ -19,9 +19,9 @@ dependencies = [
     "rich",
 ]
 [project.urls]
-Source = "https://github.com/OWNER/web2PDFbook"
-Issues = "https://github.com/OWNER/web2PDFbook/issues"
-Homepage = "https://github.com/OWNER/web2PDFbook"
+Source = "https://github.com/nomenarkt/web2PDFbook"
+Issues = "https://github.com/nomenarkt/web2PDFbook/issues"
+Homepage = "https://github.com/nomenarkt/web2PDFbook"
 
 [project.scripts]
 web2pdfbook = "web2pdfbook.cli:main"
