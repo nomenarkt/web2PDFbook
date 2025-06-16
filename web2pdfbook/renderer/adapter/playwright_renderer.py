@@ -17,7 +17,9 @@ class PlaywrightRenderer:
     def __init__(self, *, launch_args: list[str] | None = None) -> None:
         self.launch_args = launch_args or []
 
-    async def render(self, url: str, output_path: str, timeout: int) -> None:
+    async def render(
+        self, url: str, output_path: str, timeout: int, *, style: str | None = None
+    ) -> None:
         parsed = urlparse(url)
         args = list(self.launch_args)
         if parsed.scheme == "file":
@@ -32,6 +34,8 @@ class PlaywrightRenderer:
                 page = await context.new_page()
                 await page.goto(url, timeout=timeout)
                 await page.wait_for_load_state("networkidle")
+                if style:
+                    await page.add_style_tag(content=style)
                 await page.pdf(path=output_path)
                 await browser.close()
         except Exception as exc:  # noqa: BLE001

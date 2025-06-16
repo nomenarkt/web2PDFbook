@@ -75,7 +75,9 @@ def test_render_to_pdf_errors(mock_playwright, tmp_path, side_effect):
 
 
 class FailingRenderer:
-    async def render(self, url: str, output_path: str, timeout: int) -> None:
+    async def render(
+        self, url: str, output_path: str, timeout: int, *, style: str | None = None
+    ) -> None:
         raise RuntimeError("boom")
 
 

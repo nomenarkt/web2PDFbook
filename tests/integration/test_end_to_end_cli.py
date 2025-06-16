@@ -3,9 +3,8 @@ import subprocess
 import sys
 from pathlib import Path
 
-import requests
-
 import pytest
+import requests
 from PyPDF2 import PdfReader
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -118,6 +117,13 @@ def test_end_to_end_broken_url():
 
 @pytest.mark.integration
 def test_output_pdf_validity():
+    if not _ensure_playwright_installed():
+        pytest.skip("Playwright not available")
+
+    url = "https://httpbin.org/html"
+    if not is_url_accessible(url):
+        pytest.skip("Test URL is not accessible")
+
     env = os.environ.copy()
     docs_dir = ROOT / "docs"
     docs_dir.mkdir(exist_ok=True)
@@ -130,10 +136,10 @@ def test_output_pdf_validity():
             sys.executable,
             "-m",
             "web2pdfbook.cli",
-            "https://httpbin.org/html",
+            url,
             str(output),
             "--timeout",
-            "15000",
+            "30000",
         ],
         capture_output=True,
         text=True,
@@ -141,9 +147,14 @@ def test_output_pdf_validity():
         env=env,
     )
 
-    assert result.returncode == 0, result.stderr
+    assert result.returncode == 0, (
+        f"Process failed with code {result.returncode}: {result.stderr}"
+    )
+    assert output.exists(), f"Output PDF was not created: {result.stderr}"
     reader = PdfReader(str(output))
-    assert len(reader.pages) >= 1
+    assert len(reader.pages) >= 1, (
+        f"Expected at least one page, got {len(reader.pages)}"
+    )
     output.unlink()
 
 

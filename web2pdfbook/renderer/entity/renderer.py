@@ -9,7 +9,9 @@ class RendererError(Exception):
 
 
 class Renderer(Protocol):
-    async def render(self, url: str, output_path: str, timeout: int) -> None:
+    async def render(
+        self, url: str, output_path: str, timeout: int, *, style: str | None = None
+    ) -> None:
         """Render ``url`` into ``output_path`` as PDF."""
 
 
