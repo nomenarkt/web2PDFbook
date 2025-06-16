@@ -16,16 +16,28 @@ Install from PyPI:
 pip install web2pdfbook
 ```
 
+```bash
+python -m playwright install chromium
+```
+
 To test a pre-release from TestPyPI:
 
 ```bash
 pip install -i https://test.pypi.org/simple web2pdfbook
 ```
 
+```bash
+python -m playwright install chromium
+```
+
 If you cloned the repository and want to invoke `web2pdfbook` locally, install the dependencies first:
 
 ```bash
 pip install -r requirements.txt
+```
+
+```bash
+python -m playwright install chromium
 ```
 
 ## 🔄 How it works
@@ -35,6 +47,11 @@ pip install -r requirements.txt
 3. **Merging** – `merger.merge_documents()` merges the PDFs into a single document.
 
 Generate a book via the CLI:
+
+Make sure Chromium is installed for Playwright:
+```bash
+python -m playwright install chromium
+```
 
 ```bash
 web2pdfbook --help
