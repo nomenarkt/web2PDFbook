@@ -156,13 +156,17 @@ def test_end_to_end_multiple_urls():
     if output.exists():
         output.unlink()
 
+    urls = ["https://httpbin.org/html", "https://example.com"]
+    for url in urls:
+        if not is_url_accessible(url):
+            pytest.skip(f"URL not accessible: {url}")
+
     result = subprocess.run(
         [
             sys.executable,
             "-m",
             "web2pdfbook.cli",
-            "https://httpbin.org/html",
-            "https://httpbin.org/html",
+            *urls,
             str(output),
             "--timeout",
             "15000",
