@@ -3,9 +3,8 @@ import subprocess
 import sys
 from pathlib import Path
 
-import requests
-
 import pytest
+import requests
 from PyPDF2 import PdfReader
 
 ROOT = Path(__file__).resolve().parents[2]

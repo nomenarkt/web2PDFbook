@@ -9,11 +9,12 @@ async def render_to_pdf(
     timeout: int,
     *,
     renderer: Renderer,
+    style: str | None = None,
 ) -> bool:
     """Validate inputs and delegate PDF rendering."""
     validate_params(url, output_path, timeout)
     try:
-        await renderer.render(url, output_path, timeout)
+        await renderer.render(url, output_path, timeout, style=style)
     except RendererError:
         raise
     except Exception as exc:  # noqa: BLE001
