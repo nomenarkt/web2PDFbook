@@ -26,7 +26,7 @@ jobs:
           coverage-badge -o coverage.svg -f
       - name: Generate coverage report
         run: |
-          pip install coverage genbadge
+          pip install coverage genbadge[coverage]
           coverage run -m pytest
           coverage xml
           genbadge coverage -i coverage.xml -o coverage.svg
