@@ -13,13 +13,30 @@ logger = get_logger(__name__)
 
 DEFAULT_STYLE = """
 @page { margin: 1cm; }
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
 @media print {
   body {
-    margin: 0;
+    margin: 0 auto;
     padding: 0;
-    font-family: system-ui, sans-serif;
+    max-width: 100%;
+    font-family: 'Inter', system-ui, sans-serif;
     font-size: 12pt;
     -webkit-font-smoothing: antialiased;
+  }
+
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  h1,
+  h2,
+  h3,
+  p,
+  ul,
+  ol,
+  section {
+    page-break-inside: avoid;
   }
 }
 """
@@ -28,17 +45,12 @@ SUPPRESS_STYLE = """
 @media print {
   nav,
   .navbar,
-  .footer,
-  .header,
   .sidebar,
-  [data-testid="search"] {
+  footer,
+  form,
+  .search,
+  button {
     display: none !important;
-  }
-
-  section,
-  article,
-  div {
-    page-break-inside: avoid;
   }
 }
 """
@@ -52,8 +64,8 @@ class PlaywrightRenderer:
         *,
         launch_args: list[str] | None = None,
         css_path: str | None = None,
-        viewport_width: int = 1280,
-        viewport_height: int = 800,
+        viewport_width: int = 1024,
+        viewport_height: int = 1366,
     ) -> None:
         self.launch_args = launch_args or []
         self.css_path = css_path
