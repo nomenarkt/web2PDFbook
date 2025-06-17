@@ -32,6 +32,8 @@ def test_render_to_pdf_unit(mock_playwright, tmp_path, url, output, timeout):
     )
     page.goto.assert_called_with(url, timeout=timeout)
     page.wait_for_load_state.assert_called_with("networkidle")
+    page.emulate_media.assert_called_with(media="screen")
+    page.add_style_tag.assert_called()
     page.pdf.assert_called_with(path=str(dest))
 
 
@@ -97,6 +99,32 @@ def test_validate_params_accepts_file_url(tmp_path):
     html.write_text("<p>ok</p>")
     file_url = html.as_uri()
     validate_params(file_url, str(tmp_path / "out.pdf"), 1501)
+
+
+@patch("web2pdfbook.renderer.adapter.playwright_renderer.async_playwright")
+def test_render_to_pdf_custom_css(mock_playwright, tmp_path):
+    page = AsyncMock()
+    context = AsyncMock(new_page=AsyncMock(return_value=page))
+    browser = AsyncMock(new_context=AsyncMock(return_value=context))
+    browser_type = AsyncMock(launch=AsyncMock(return_value=browser))
+    mock_playwright_cm = AsyncMock()
+    mock_playwright_cm.__aenter__.return_value = MagicMock(chromium=browser_type)
+    mock_playwright.return_value = mock_playwright_cm
+
+    css = tmp_path / "style.css"
+    css.write_text("body { color: red; }")
+
+    dest = tmp_path / "out.pdf"
+    renderer = PlaywrightRenderer(css_path=str(css))
+    assert (
+        asyncio.run(
+            render_to_pdf(
+                "https://example.com", str(dest), timeout=15000, renderer=renderer
+            )
+        )
+        is True
+    )
+    page.add_style_tag.assert_any_call(path=str(css))
 
 
 @pytest.mark.skip("requires network and browser")
