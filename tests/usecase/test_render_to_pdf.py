@@ -6,6 +6,7 @@ import pytest
 from web2pdfbook.renderer import PlaywrightRenderer, RendererError
 from web2pdfbook.renderer.adapter.playwright_renderer import (
     DEFAULT_STYLE,
+    FONT_URL,
     SUPPRESS_STYLE,
 )
 from web2pdfbook.renderer.entity.renderer import validate_params
@@ -37,6 +38,7 @@ def test_render_to_pdf_unit(mock_playwright, tmp_path, url, output, timeout):
     page.goto.assert_called_with(url, timeout=timeout)
     page.wait_for_load_state.assert_called_with("networkidle")
     page.emulate_media.assert_called_with(media="screen")
+    page.add_style_tag.assert_any_call(url=FONT_URL)
     page.add_style_tag.assert_any_call(content=DEFAULT_STYLE)
     page.add_style_tag.assert_any_call(content=SUPPRESS_STYLE)
     page.pdf.assert_called_with(path=str(dest))
@@ -129,9 +131,31 @@ def test_render_to_pdf_custom_css(mock_playwright, tmp_path):
         )
         is True
     )
+    page.add_style_tag.assert_any_call(url=FONT_URL)
     page.add_style_tag.assert_any_call(content=DEFAULT_STYLE)
     page.add_style_tag.assert_any_call(content=SUPPRESS_STYLE)
     page.add_style_tag.assert_any_call(path=str(css))
+
+
+def test_default_style_contains_expected_rules():
+    assert "@page { margin: 0.75cm 1cm 1cm 0.75cm; }" in DEFAULT_STYLE
+    assert "page-break-before: always" in DEFAULT_STYLE
+    assert "font-family: 'Inter', sans-serif" in DEFAULT_STYLE
+
+
+def test_suppress_style_hides_ui_elements():
+    for cls in [
+        ".header",
+        ".menu",
+        ".edit-page",
+        ".footer",
+        ".timestamp",
+        ".search",
+        ".command-bar",
+        "nav",
+        ".feedback",
+    ]:
+        assert cls in SUPPRESS_STYLE
 
 
 @pytest.mark.skip("requires network and browser")

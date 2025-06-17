@@ -11,15 +11,15 @@ from ..entity.renderer import RendererError
 logger = get_logger(__name__)
 
 
+FONT_URL = "https://fonts.googleapis.com/css2?family=Inter&display=swap"
+
 DEFAULT_STYLE = """
-@page { margin: 1cm; }
-@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+@page { margin: 0.75cm 1cm 1cm 0.75cm; }
 @media print {
   body {
     margin: 0 auto;
     padding: 0;
     max-width: 100%;
-    font-family: 'Inter', system-ui, sans-serif;
     font-size: 12pt;
     -webkit-font-smoothing: antialiased;
   }
@@ -38,18 +38,44 @@ DEFAULT_STYLE = """
   section {
     page-break-inside: avoid;
   }
+
+  h1,
+  h2,
+  .doc-section,
+  section {
+    page-break-before: always;
+    break-before: page;
+    padding-top: 1.5em;
+  }
+
+  section,
+  article,
+  pre {
+    page-break-inside: avoid;
+  }
+
+  * {
+    font-family: 'Inter', sans-serif !important;
+  }
+
+  code,
+  pre {
+    font-family: 'JetBrains Mono', monospace;
+  }
 }
 """
 
 SUPPRESS_STYLE = """
 @media print {
-  nav,
-  .navbar,
-  .sidebar,
-  footer,
-  form,
+  .header,
+  .menu,
+  .edit-page,
+  .footer,
+  .timestamp,
   .search,
-  button {
+  .command-bar,
+  nav,
+  .feedback {
     display: none !important;
   }
 }
@@ -94,6 +120,7 @@ class PlaywrightRenderer:
                 await page.goto(url, timeout=timeout)
                 await page.wait_for_load_state("networkidle")
                 await page.emulate_media(media="screen")
+                await page.add_style_tag(url=FONT_URL)
                 await page.add_style_tag(content=DEFAULT_STYLE)
                 await page.add_style_tag(content=SUPPRESS_STYLE)
                 if self.css_path:
