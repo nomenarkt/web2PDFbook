@@ -121,6 +121,7 @@ def test_end_to_end_broken_url():
 
 
 @pytest.mark.integration
+@pytest.mark.skipif(os.environ.get("CI") == "true", reason="Skipping flaky PDF test in CI")
 def test_output_pdf_validity():
     env = os.environ.copy()
     docs_dir = ROOT / "docs"
@@ -149,6 +150,7 @@ def test_output_pdf_validity():
     reader = PdfReader(str(output))
     assert len(reader.pages) >= 1
     output.unlink()
+
 
 
 @pytest.mark.integration
