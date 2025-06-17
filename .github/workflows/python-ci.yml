@@ -10,7 +10,7 @@ jobs:
   build:
     permissions:
       contents: write
-      pull-requests: write
+      pull-requests: write  # ✅ Required for PR creation
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -48,3 +48,4 @@ jobs:
           body: "Automated update of test coverage badge from CI"
           author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
           labels: automated pr
+          token: ${{ secrets.GITHUB_TOKEN }}  # ✅ This enables the action to create PRs
