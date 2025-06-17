@@ -160,7 +160,10 @@ def test_end_to_end_multiple_urls():
     if output.exists():
         output.unlink()
 
-    urls = ["https://httpbin.org/html", "https://httpbin.org/html"]
+    urls = [
+    "https://httpbin.org/html",
+    "https://example.com"
+    ]
     accessible_urls = [u for u in urls if is_url_accessible(u)]
 
     if not accessible_urls:
