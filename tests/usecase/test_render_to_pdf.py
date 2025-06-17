@@ -4,6 +4,10 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from web2pdfbook.renderer import PlaywrightRenderer, RendererError
+from web2pdfbook.renderer.adapter.playwright_renderer import (
+    DEFAULT_STYLE,
+    SUPPRESS_STYLE,
+)
 from web2pdfbook.renderer.entity.renderer import validate_params
 from web2pdfbook.renderer.usecase.render_to_pdf import render_to_pdf
 
@@ -33,7 +37,8 @@ def test_render_to_pdf_unit(mock_playwright, tmp_path, url, output, timeout):
     page.goto.assert_called_with(url, timeout=timeout)
     page.wait_for_load_state.assert_called_with("networkidle")
     page.emulate_media.assert_called_with(media="screen")
-    page.add_style_tag.assert_called()
+    page.add_style_tag.assert_any_call(content=DEFAULT_STYLE)
+    page.add_style_tag.assert_any_call(content=SUPPRESS_STYLE)
     page.pdf.assert_called_with(path=str(dest))
 
 
@@ -124,6 +129,8 @@ def test_render_to_pdf_custom_css(mock_playwright, tmp_path):
         )
         is True
     )
+    page.add_style_tag.assert_any_call(content=DEFAULT_STYLE)
+    page.add_style_tag.assert_any_call(content=SUPPRESS_STYLE)
     page.add_style_tag.assert_any_call(path=str(css))
 
 
