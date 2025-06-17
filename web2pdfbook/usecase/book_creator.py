@@ -17,29 +17,37 @@ RendererFunc = Callable[[str, str, int], Awaitable[bool]]
 logger = get_logger(__name__)
 
 
-async def run(urls: list[str], output_file: str, timeout: int, use_index: bool = False):
-    """Render multiple URLs and merge them into a single PDF output."""
-    rendered_pdfs: list[str] = []
+async def create_book(
+    base_url: str,
+    output_file: str,
+    timeout: int,
+    *,
+    link_extractor: LinkExtractor,
+    index_extractor: LinkExtractor = extract_index_links,
+    renderer: RendererFunc,
+    merger: Callable[[list[str], str], bool],
+    use_index_links: bool = False,
+) -> str:
+    """Create a PDF book from ``base_url`` and save to ``output_file``."""
+    parsed = urlparse(base_url)
+    if parsed.scheme == "file":
+        links = [base_url]
+    else:
+        if use_index_links:
+            result = index_extractor(base_url)
+            logger.info("Used index-based link extraction")
+        else:
+            result = link_extractor(base_url)
+            logger.info("Used full-site link extraction")
+        links = result.links
 
+    pdf_paths: list[str] = []
     with tempfile.TemporaryDirectory() as tmpdir:
-        for idx, url in enumerate(urls):
+        for idx, link in enumerate(links):
             dest = os.path.join(tmpdir, f"page{idx}.pdf")
-            try:
-                from ..renderer.adapter.playwright_renderer import Renderer
-
-                await Renderer().render(url, dest, timeout=timeout)
-                rendered_pdfs.append(dest)
-            except Exception as e:
-                logger.warning("Failed to render %s: %s", url, e)
-
-        if not rendered_pdfs:
-            raise RuntimeError("no valid PDFs generated")
-
-        merger = PdfMerger()
-        for path in rendered_pdfs:
-            merger.append(path)
-        merger.write(output_file)
-        merger.close()
+            await renderer(link, dest, timeout)
+            pdf_paths.append(dest)
+        merger(pdf_paths, output_file)
 
     logger.info("written %s", output_file)
     return output_file

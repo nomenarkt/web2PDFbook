@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 import asyncio
 
-from .usecase import book_creator
+from .cli_runner import run
 from .config import load_config
 
 
@@ -42,12 +42,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     asyncio.run(
-        book_creator.run(
-            args.urls,
-            args.output,
-            timeout=args.timeout,
-            use_index=args.use_index,
-        )
+        run(args.urls, args.output, timeout=args.timeout, use_index=args.use_index)
     )
     return 0
 
