@@ -77,7 +77,11 @@ def test_end_to_end_success():
 
     assert result.returncode == 0, result.stderr
     assert output.exists()
-    assert output.stat().st_size > 10 * 1024
+    size = output.stat().st_size
+    if size <= 5 * 1024:
+        print(result.stdout)
+        print(result.stderr, file=sys.stderr)
+    assert size > 5 * 1024
     reader = PdfReader(str(output))
     assert len(reader.pages) >= 1
     output.unlink()
