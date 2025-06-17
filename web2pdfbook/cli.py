@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 import asyncio
 
-from .book_creator import run
+from .cli_runner import run
 from .config import load_config
 
 

@@ -3,11 +3,11 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from web2pdfbook.book_creator import run
+from web2pdfbook.cli_runner import run
 
 
-@patch("web2pdfbook.book_creator.merge_documents")
-@patch("web2pdfbook.book_creator.create_book", new_callable=AsyncMock)
+@patch("web2pdfbook.cli_runner.merge_documents")
+@patch("web2pdfbook.cli_runner.create_book", new_callable=AsyncMock)
 def test_run_orchestrates(mock_create, mock_merge, tmp_path):
     mock_create.side_effect = lambda url, dest, timeout, **kwargs: dest
     out = tmp_path / "book.pdf"
@@ -21,9 +21,9 @@ def test_run_orchestrates(mock_create, mock_merge, tmp_path):
         assert call.kwargs.get("use_index_links") is True
 
 
-@patch("web2pdfbook.book_creator.logger")
-@patch("web2pdfbook.book_creator.merge_documents")
-@patch("web2pdfbook.book_creator.create_book", new_callable=AsyncMock)
+@patch("web2pdfbook.cli_runner.logger")
+@patch("web2pdfbook.cli_runner.merge_documents")
+@patch("web2pdfbook.cli_runner.create_book", new_callable=AsyncMock)
 def test_run_partial_failures(mock_create, mock_merge, mock_logger, tmp_path):
     async def succeed(url, dest, timeout, **kwargs):
         return dest
@@ -39,7 +39,7 @@ def test_run_partial_failures(mock_create, mock_merge, mock_logger, tmp_path):
 
 
 @patch(
-    "web2pdfbook.book_creator.create_book",
+    "web2pdfbook.cli_runner.create_book",
     new_callable=AsyncMock,
     side_effect=Exception("boom"),
 )

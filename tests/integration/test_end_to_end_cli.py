@@ -160,13 +160,21 @@ def test_end_to_end_multiple_urls():
     if output.exists():
         output.unlink()
 
+    urls = [
+    "https://httpbin.org/html",
+    "https://example.com"
+    ]
+    accessible_urls = [u for u in urls if is_url_accessible(u)]
+
+    if not accessible_urls:
+        pytest.skip("No accessible URLs for test")
+
     result = subprocess.run(
         [
             sys.executable,
             "-m",
             "web2pdfbook.cli",
-            "https://httpbin.org/html",
-            "https://httpbin.org/html",
+            *accessible_urls,
             str(output),
             "--timeout",
             "15000",
@@ -179,8 +187,9 @@ def test_end_to_end_multiple_urls():
 
     assert result.returncode == 0, result.stderr
     reader = PdfReader(str(output))
-    assert len(reader.pages) >= 2
+    assert len(reader.pages) == len(accessible_urls), f"Expected {len(accessible_urls)} pages, got {len(reader.pages)}"
     output.unlink()
+
 
 
 @pytest.mark.integration

@@ -5,13 +5,14 @@ import tempfile
 from typing import Awaitable, Callable
 from urllib.parse import urlparse
 
+from PyPDF2 import PdfMerger
+
 from ..crawler import extract_index_links
 from ..crawler.entity.crawl_result import CrawlResult
 from ..logger import get_logger
 
 LinkExtractor = Callable[[str], CrawlResult]
 RendererFunc = Callable[[str, str, int], Awaitable[bool]]
-MergeFunc = Callable[[list[str], str], bool]
 
 logger = get_logger(__name__)
 
@@ -24,7 +25,7 @@ async def create_book(
     link_extractor: LinkExtractor,
     index_extractor: LinkExtractor = extract_index_links,
     renderer: RendererFunc,
-    merger: MergeFunc,
+    merger: Callable[[list[str], str], bool],
     use_index_links: bool = False,
 ) -> str:
     """Create a PDF book from ``base_url`` and save to ``output_file``."""
