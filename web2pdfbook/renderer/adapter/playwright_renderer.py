@@ -13,7 +13,34 @@ logger = get_logger(__name__)
 
 DEFAULT_STYLE = """
 @page { margin: 1cm; }
-body { font-family: system-ui, sans-serif; }
+@media print {
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: system-ui, sans-serif;
+    font-size: 12pt;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+"""
+
+SUPPRESS_STYLE = """
+@media print {
+  nav,
+  .navbar,
+  .footer,
+  .header,
+  .sidebar,
+  [data-testid="search"] {
+    display: none !important;
+  }
+
+  section,
+  article,
+  div {
+    page-break-inside: avoid;
+  }
+}
 """
 
 
@@ -56,6 +83,7 @@ class PlaywrightRenderer:
                 await page.wait_for_load_state("networkidle")
                 await page.emulate_media(media="screen")
                 await page.add_style_tag(content=DEFAULT_STYLE)
+                await page.add_style_tag(content=SUPPRESS_STYLE)
                 if self.css_path:
                     css_file = str(Path(self.css_path).resolve())
                     await page.add_style_tag(path=css_file)
