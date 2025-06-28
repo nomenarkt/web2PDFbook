@@ -14,3 +14,6 @@ build/
 *.egg-info/
 .pypirc
 !.pypirc
+
+# Editor workspace files
+*.code-workspace

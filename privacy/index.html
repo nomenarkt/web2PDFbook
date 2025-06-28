@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Privacy Policy – GPT GitHub Integration</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 2rem; max-width: 800px; margin: auto; line-height: 1.6; }
+    h1, h2 { color: #222; }
+    a { color: #0366d6; }
+  </style>
+</head>
+<body>
+  <h1>Privacy Policy</h1>
+  <p><strong>Effective Date:</strong> June 28, 2025</p>
+
+  <p>This privacy policy applies to the GPT integration that interfaces with your GitHub repositories to assist with software development tasks, including managing project files like <code>/backend/task_log.md</code> and <code>/backend/backlog.md</code>.</p>
+
+  <h2>What the GPT Does</h2>
+  <ul>
+    <li>Reads content from specified GitHub repositories you authorize.</li>
+    <li>Writes to files such as <code>task_log.md</code> and <code>backlog.md</code> based on your requests.</li>
+    <li>Lists repository contents and file metadata to assist with task tracking and Codex handoffs.</li>
+  </ul>
+
+  <h2>What the GPT Does Not Do</h2>
+  <ul>
+    <li>It does <strong>not</strong> access private user information, emails, or commit history.</li>
+    <li>It does <strong>not</strong> transmit, store, or retain any data beyond your current session.</li>
+    <li>It does <strong>not</strong> make API calls without explicit user authorization and context.</li>
+  </ul>
+
+  <h2>Data Handling</h2>
+  <p>All GitHub API calls are performed on your behalf after OAuth authentication. The GPT does not persist any tokens or data — all operations are ephemeral within the active session.</p>
+
+  <h2>OAuth and Scopes</h2>
+  <p>The GPT uses GitHub OAuth for secure access. Required scopes:</p>
+  <ul>
+    <li><code>repo</code> – for reading and writing to your GitHub files</li>
+    <li><code>read:user</code> – to confirm identity of authenticated user</li>
+    <li><code>write:repo_hook</code> – (optional) for automation with webhooks</li>
+  </ul>
+
+  <h2>Questions?</h2>
+  <p>Contact the developer via your GitHub account or repository discussions.</p>
+
+  <p>Hosted on <a href="https://github.com/nomenarkt/signalengine">GitHub – signalengine</a>.</p>
+</body>
+</html>
